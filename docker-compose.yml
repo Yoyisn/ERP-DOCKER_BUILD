@@ -3,10 +3,10 @@ services:
   db:
     image: mysql:8
     environment:
-        MYSQL_DATABASE: ERP
-        MYSQL_USER: user_db
-        MYSQL_PASSWORD: 1092454457J
-        MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ERP
+      MYSQL_USER: user_db
+      MYSQL_PASSWORD: 1092454457J
+      MYSQL_ROOT_PASSWORD: 3113509873Mi
     build:
       context: ./MySql
       dockerfile: Dockerfile
@@ -20,25 +20,25 @@ services:
     networks:
       - eam_apps
     healthcheck:
-      test: ["CMD","mysql", "-u", "root", "-p1092454457J"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p3113509873Mi"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-  # --------------------------------------------------------------------
+
   backend:
-        build: .
-        ports:
-          - "9191:9191"  # depende del puerto expuesto en tu backend
-        environment:
-          SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ERP?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true #jdbc:mysql://db:3306/ERP?serverTimezone=UTC&createDatabaseIfNotExist=true #jdbc:mysql://db:3306/ERP
-          SPRING_DATASOURCE_USERNAME: user_db
-          SPRING_DATASOURCE_PASSWORD: 1092454457J
-        depends_on:
-          - db
-        networks:
-          - eam_apps
-  # --------------------------------------------------------------------
-  # - The adminer is a tool for managing content in databases.
+    build: .
+    ports:
+      - "9191:9191"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ERP?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: user_db
+      SPRING_DATASOURCE_PASSWORD: 1092454457J
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - eam_apps
+
   adminer:
     image: adminer
     container_name: adminer_wms
@@ -47,7 +47,6 @@ services:
       - 8080:8080
     networks:
       - eam_apps
-# --------------------------------------------------------------------
 
 networks:
   eam_apps:
